@@ -7,349 +7,305 @@
 
 <style>
 *{box-sizing:border-box}
-
 body{
-  margin:0;
-  font-family:Arial,sans-serif;
-  background:#f3f6fa;
-  color:#123;
+margin:0;
+font-family:Arial,sans-serif;
+background:#f3f6fa;
+color:#123;
 }
-
 header{
-  padding:14px 18px;
-  background:#00529b;
-  color:white;
-  font-size:22px;
-  font-weight:bold;
+padding:14px 18px;
+background:#00529b;
+color:white;
+font-size:22px;
+font-weight:bold;
 }
-
 .wrap{
-  display:grid;
-  grid-template-columns:380px 1fr;
-  gap:16px;
-  padding:16px;
-  max-width:1450px;
-  margin:auto;
+display:grid;
+grid-template-columns:380px 1fr;
+gap:16px;
+padding:16px;
+max-width:1450px;
+margin:auto;
 }
-
 .card{
-  background:white;
-  border-radius:16px;
-  padding:16px;
-  box-shadow:0 3px 14px #0001;
+background:white;
+border-radius:16px;
+padding:16px;
+box-shadow:0 3px 14px #0001;
 }
-
 h2{
-  margin:0 0 12px;
-  font-size:20px;
+margin:0 0 12px;
+font-size:20px;
 }
-
 .row{
-  display:flex;
-  gap:8px;
+display:flex;
+gap:8px;
 }
-
 .row>*{
-  flex:1;
+flex:1;
 }
-
 label{
-  display:block;
-  font-weight:bold;
-  font-size:14px;
-  margin:8px 0 4px;
+display:block;
+font-weight:bold;
+font-size:14px;
+margin:8px 0 4px;
 }
-
 input{
-  width:100%;
-  padding:11px;
-  border:1px solid #ccd8e2;
-  border-radius:10px;
+width:100%;
+padding:11px;
+border:1px solid #ccd8e2;
+border-radius:10px;
 }
-
 button{
-  border:0;
-  border-radius:10px;
-  padding:11px 13px;
-  background:#e8f2fb;
-  color:#00529b;
-  font-weight:bold;
-  cursor:pointer;
+border:0;
+border-radius:10px;
+padding:11px 13px;
+background:#e8f2fb;
+color:#00529b;
+font-weight:bold;
+cursor:pointer;
 }
-
 button.primary{
-  background:#00529b;
-  color:#fff;
+background:#00529b;
+color:#fff;
 }
-
 button.danger{
-  background:#ffe8e8;
-  color:#b00;
+background:#ffe8e8;
+color:#b00;
 }
-
 .tools{
-  display:flex;
-  flex-wrap:wrap;
-  gap:8px;
-  margin-bottom:10px;
+display:flex;
+flex-wrap:wrap;
+gap:8px;
+margin-bottom:10px;
 }
-
 .hint{
-  font-size:13px;
-  color:#678;
-  margin:8px 0;
+font-size:13px;
+color:#678;
+margin:8px 0;
 }
-
 .status{
-  font-weight:bold;
-  color:#00529b;
-  margin:8px 0;
+font-weight:bold;
+color:#00529b;
+margin:8px 0;
 }
-
 #players{
-  max-height:420px;
-  overflow:auto;
+max-height:420px;
+overflow:auto;
 }
-
 .p{
-  display:flex;
-  align-items:center;
-  gap:6px;
-  padding:7px;
-  border-bottom:1px solid #eee;
+display:flex;
+align-items:center;
+gap:6px;
+padding:7px;
+border-bottom:1px solid #eee;
 }
-
 .p span{
-  min-width:0;
-  flex:1;
+min-width:0;
+flex:1;
 }
-
 .thumb{
-  width:42px;
-  height:42px;
-  border-radius:50%;
-  object-fit:cover;
-  background:#eee;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-weight:bold;
-  flex-shrink:0;
+width:42px;
+height:42px;
+border-radius:50%;
+object-fit:cover;
+background:#eee;
+display:flex;
+align-items:center;
+justify-content:center;
+font-weight:bold;
+flex-shrink:0;
 }
-
 .p button{
-  padding:7px 8px;
-  flex-shrink:0;
+padding:7px 8px;
+flex-shrink:0;
 }
-
-/* ピッチ */
 
 #pitch{
-  position:relative;
-  width:100%;
-  aspect-ratio:1.55;
-  background:repeating-linear-gradient(
-    0deg,
-    #138b49 0 9%,
-    #108044 9% 18%
-  );
-  border:4px solid white;
-  border-radius:8px;
-  overflow:hidden;
-  touch-action:none;
+position:relative;
+width:100%;
+aspect-ratio:1.55;
+background:repeating-linear-gradient(
+0deg,
+#138b49 0 9%,
+#108044 9% 18%
+);
+border:4px solid white;
+border-radius:8px;
+overflow:hidden;
+touch-action:none;
 }
-
 .line{
-  position:absolute;
-  border:2px solid #fffc;
-  pointer-events:none;
+position:absolute;
+border:2px solid #fffc;
+pointer-events:none;
 }
-
 .mid{
-  left:50%;
-  top:0;
-  height:100%;
-  border-left:2px solid white;
+left:50%;
+top:0;
+height:100%;
+border-left:2px solid white;
 }
-
 .circle{
-  left:50%;
-  top:50%;
-  width:19%;
-  aspect-ratio:1;
-  border-radius:50%;
-  transform:translate(-50%,-50%);
+left:50%;
+top:50%;
+width:19%;
+aspect-ratio:1;
+border-radius:50%;
+transform:translate(-50%,-50%);
 }
-
 .boxL{
-  left:0;
-  top:25%;
-  width:16%;
-  height:50%;
+left:0;
+top:25%;
+width:16%;
+height:50%;
 }
-
 .boxR{
-  right:0;
-  top:25%;
-  width:16%;
-  height:50%;
+right:0;
+top:25%;
+width:16%;
+height:50%;
 }
-
-/* 選手 */
 
 .player{
-  position:absolute;
-  width:58px;
-  height:58px;
-  border-radius:50%;
-  background:#00529b;
-  color:#fff;
-  border:3px solid #fff;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-weight:bold;
-  transform:translate(-50%,-50%);
-  z-index:5;
-  touch-action:none;
-  user-select:none;
-  cursor:grab;
+position:absolute;
+width:58px;
+height:58px;
+border-radius:50%;
+background:#00529b;
+color:#fff;
+border:3px solid #fff;
+display:flex;
+align-items:center;
+justify-content:center;
+font-weight:bold;
+transform:translate(-50%,-50%);
+z-index:5;
+touch-action:none;
+user-select:none;
+cursor:grab;
 }
-
 .player:active{
-  cursor:grabbing;
+cursor:grabbing;
 }
-
 .player img{
-  width:100%;
-  height:100%;
-  object-fit:cover;
-  border-radius:50%;
+width:100%;
+height:100%;
+object-fit:cover;
+border-radius:50%;
 }
-
 .playerName{
-  position:absolute;
-  top:61px;
-  left:50%;
-  transform:translateX(-50%);
-  white-space:nowrap;
-  background:white;
-  color:#123;
-  border-radius:6px;
-  padding:2px 6px;
-  font-size:12px;
-  font-weight:bold;
-  box-shadow:0 1px 4px #0003;
+position:absolute;
+top:61px;
+left:50%;
+transform:translateX(-50%);
+white-space:nowrap;
+background:white;
+color:#123;
+border-radius:6px;
+padding:2px 6px;
+font-size:12px;
+font-weight:bold;
+box-shadow:0 1px 4px #0003;
+z-index:10;
 }
-
 .num{
-  position:absolute;
-  bottom:-13px;
-  background:white;
-  color:#00529b;
-  border-radius:8px;
-  padding:1px 5px;
-  font-size:11px;
+position:absolute;
+bottom:-13px;
+background:white;
+color:#00529b;
+border-radius:8px;
+padding:1px 5px;
+font-size:11px;
+z-index:11;
 }
-
-/* ボール */
 
 .ball{
-  position:absolute;
-  z-index:6;
-  font-size:34px;
-  transform:translate(-50%,-50%);
-  touch-action:none;
-  user-select:none;
-  cursor:grab;
+position:absolute;
+z-index:6;
+font-size:34px;
+transform:translate(-50%,-50%);
+touch-action:none;
+user-select:none;
+cursor:grab;
 }
-
-/* パス線 */
 
 .arrow{
-  position:absolute;
-  height:4px;
-  background:white;
-  transform-origin:left center;
-  z-index:4;
-  pointer-events:none;
+position:absolute;
+height:4px;
+background:white;
+transform-origin:left center;
+z-index:4;
+pointer-events:none;
 }
-
 .arrow:after{
-  content:"";
-  position:absolute;
-  right:-2px;
-  top:-6px;
-  border-left:13px solid white;
-  border-top:8px solid transparent;
-  border-bottom:8px solid transparent;
+content:"";
+position:absolute;
+right:-2px;
+top:-6px;
+border-left:13px solid white;
+border-top:8px solid transparent;
+border-bottom:8px solid transparent;
 }
-
-/* ベンチ */
 
 #bench{
-  margin-top:16px;
-  padding:14px;
-  background:#eef3f7;
-  border-radius:12px;
-  border:2px solid #d7e0e8;
-  min-height:140px;
+margin-top:16px;
+padding:14px;
+background:#eef3f7;
+border-radius:12px;
+border:2px solid #d7e0e8;
+min-height:150px;
 }
-
 .benchTitle{
-  font-weight:bold;
-  color:#00529b;
-  margin-bottom:10px;
+font-weight:bold;
+color:#00529b;
+margin-bottom:10px;
 }
-
 #benchPlayers{
-  display:flex;
-  flex-wrap:wrap;
-  gap:14px;
-  min-height:80px;
+display:flex;
+flex-wrap:wrap;
+gap:14px;
+min-height:90px;
 }
-
 .benchPlayer{
-  width:80px;
-  text-align:center;
-  user-select:none;
+width:80px;
+text-align:center;
+user-select:none;
 }
-
 .benchPlayer img,
 .benchPhoto{
-  width:50px;
-  height:50px;
-  border-radius:50%;
-  object-fit:cover;
-  background:#00529b;
-  color:white;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  margin:auto;
-  font-weight:bold;
+width:50px;
+height:50px;
+border-radius:50%;
+object-fit:cover;
+background:#00529b;
+color:white;
+display:flex;
+align-items:center;
+justify-content:center;
+margin:auto;
+font-weight:bold;
 }
-
 .benchName{
-  display:block;
-  font-size:12px;
-  font-weight:bold;
-  margin-top:4px;
-  white-space:nowrap;
-  overflow:hidden;
-  text-overflow:ellipsis;
+display:block;
+font-size:12px;
+font-weight:bold;
+margin-top:4px;
+white-space:nowrap;
+overflow:hidden;
+text-overflow:ellipsis;
 }
-
 .benchNum{
-  font-size:11px;
-  color:#00529b;
+font-size:11px;
+color:#00529b;
 }
 
 @media(max-width:850px){
-  .wrap{
-    grid-template-columns:1fr;
-    padding:9px;
-  }
+.wrap{
+grid-template-columns:1fr;
+padding:9px;
+}
 }
 </style>
 </head>
@@ -382,20 +338,11 @@ button.danger{
 </div>
 
 <div class="row" style="margin-top:10px">
-
-<button class="primary" id="reg">
-選手を登録
-</button>
-
-<button id="new">
-＋新規
-</button>
-
+<button class="primary" id="reg">選手を登録</button>
+<button id="new">＋新規</button>
 </div>
 
-<div class="status" id="count">
-登録選手：0 / 50人
-</div>
+<div class="status" id="count">登録選手：0 / 50人</div>
 
 <div id="players"></div>
 
@@ -405,53 +352,32 @@ button.danger{
 
 </section>
 
-
 <section class="card">
 
 <div class="tools">
-
 <button data-f="4-4-2">4-4-2</button>
 <button data-f="4-3-3">4-3-3</button>
 <button data-f="3-5-2">3-5-2</button>
-
 <button id="ball">⚽ ボール</button>
 <button id="arrow">↗ パス線</button>
 <button id="clear">クリア</button>
-
-<button id="save" class="primary">
-保存
-</button>
-
-<button id="load">
-読み込み
-</button>
-
+<button id="save" class="primary">保存</button>
+<button id="load">読み込み</button>
 </div>
 
 <label>解説メモ</label>
-
-<input
-  id="memo"
-  placeholder="例：右サイドから中央へ展開"
->
+<input id="memo" placeholder="例：右サイドから中央へ展開">
 
 <div class="hint">
-選手とボールはドラッグできます。
-パス線モードではピッチをドラッグしてください。
+選手とボールはドラッグできます。パス線モードではピッチをドラッグしてください。
 </div>
 
-
 <div id="pitch">
-
 <div class="line mid"></div>
 <div class="line circle"></div>
 <div class="line boxL"></div>
 <div class="line boxR"></div>
-
 </div>
-
-
-<!-- ベンチ -->
 
 <div id="bench">
 
@@ -468,75 +394,8 @@ button.danger{
 
 </div>
 
-
 <script>
-
-/* =========================
-   基本
-========================= */
-
-const pitch=document.querySelector('#pitch');
-
-let roster=[];
-let arrows=[];
-let arrowMode=false;
-let ball=null;
-let drag=null;
-
-const $=id=>document.getElementById(id);
-
-
-/* =========================
-   HTMLエスケープ
-========================= */
-
-function esc(s){
-
-  return String(s).replace(
-    /[&<>"']/g,
-    c=>({
-      '&':'&amp;',
-      '<':'&lt;',
-      '>':'&gt;',
-      '"':'&quot;',
-      "'":'&#39;'
-    }[c])
-  );
-
-}
-
-
-/* =========================
-   写真読み込み
-========================= */
-
-function photo(file){
-
-  return new Promise(resolve=>{
-
-    if(!file){
-      resolve('');
-      return;
-    }
-
-    const reader=new FileReader();
-
-    reader.onload=()=>{
-      resolve(reader.result);
-    };
-
-    reader.onerror=()=>{
-      resolve('');
-    };
-
-    reader.readAsDataURL(file);
-
-  });
-
-}
-
-
-/* =========================
+  /* =========================
    選手一覧
 ========================= */
 
@@ -582,24 +441,25 @@ function render(){
 
     `).join('');
 
-
   document.querySelectorAll('.placeBtn').forEach(btn=>{
 
     btn.onclick=()=>{
+
       place(btn.dataset.id);
+
     };
 
   });
-
 
   document.querySelectorAll('.benchBtn').forEach(btn=>{
 
     btn.onclick=()=>{
+
       placeBench(btn.dataset.id);
+
     };
 
   });
-
 
   document.querySelectorAll('.delBtn').forEach(btn=>{
 
@@ -642,7 +502,6 @@ function place(id){
 
   if(!p)return;
 
-
   const e=document.createElement('div');
 
   e.className='player';
@@ -650,8 +509,8 @@ function place(id){
   e.dataset.id=p.id;
 
   e.style.left='50%';
-  e.style.top='50%';
 
+  e.style.top='50%';
 
   if(p.photo){
 
@@ -687,7 +546,6 @@ function place(id){
 
   }
 
-
   pitch.appendChild(e);
 
   dragify(e);
@@ -707,24 +565,21 @@ function placeBench(id){
 
   if(!p)return;
 
-
-  /* 同じ選手を2回ベンチに置かない */
-
   if(
     document.querySelector(
       `.benchPlayer[data-id="${id}"]`
     )
   ){
-    return;
-  }
 
+    return;
+
+  }
 
   const e=document.createElement('div');
 
   e.className='benchPlayer';
 
   e.dataset.id=p.id;
-
 
   if(p.photo){
 
@@ -748,4 +603,737 @@ function placeBench(id){
 
       <div class="benchPhoto">
         ${esc(p.num)}
-      </
+      </div>
+
+      <span class="benchName">
+        ${esc(p.name)}
+      </span>
+
+      <span class="benchNum">
+        背番号 ${esc(p.num)}
+      </span>
+
+    `;
+
+  }
+
+  $('benchPlayers').appendChild(e);
+
+  updateBenchCount();
+
+}
+
+
+/* =========================
+   ベンチ人数
+========================= */
+
+function updateBenchCount(){
+
+  const n=document.querySelectorAll(
+    '#benchPlayers .benchPlayer'
+  ).length;
+
+  $('benchCount').textContent=`${n}人`;
+
+}
+
+
+/* =========================
+   ドラッグ
+========================= */
+
+function dragify(e){
+
+  e.addEventListener(
+    'pointerdown',
+    event=>{
+
+      if(arrowMode)return;
+
+      drag=e;
+
+      try{
+
+        e.setPointerCapture(
+          event.pointerId
+        );
+
+      }catch(err){}
+
+    }
+  );
+
+  e.addEventListener(
+    'pointermove',
+    event=>{
+
+      if(drag!==e)return;
+
+      const r=
+        pitch.getBoundingClientRect();
+
+      const x=
+        (event.clientX-r.left)/
+        r.width*100;
+
+      const y=
+        (event.clientY-r.top)/
+        r.height*100;
+
+      e.style.left=
+        Math.max(
+          3,
+          Math.min(97,x)
+        )+'%';
+
+      e.style.top=
+        Math.max(
+          5,
+          Math.min(95,y)
+        )+'%';
+
+    }
+  );
+
+  e.addEventListener(
+    'pointerup',
+    ()=>{
+
+      drag=null;
+
+    }
+  );
+
+  e.addEventListener(
+    'pointercancel',
+    ()=>{
+
+      drag=null;
+
+    }
+  );
+
+}
+
+
+/* =========================
+   選手登録
+========================= */
+
+$('reg').onclick=async()=>{
+
+  if(roster.length>=50){
+
+    alert('選手は最大50人です');
+
+    return;
+
+  }
+
+  const name=
+    $('name').value.trim();
+
+  if(!name){
+
+    alert('名前を入力してください');
+
+    return;
+
+  }
+
+  const p={
+
+    id:
+      String(Date.now())+
+      String(Math.random()).slice(2),
+
+    num:$('num').value,
+
+    name:name,
+
+    photo:
+      await photo(
+        $('photo').files[0]
+      )
+
+  };
+
+  roster.push(p);
+
+  render();
+
+  $('num').value=
+    Number(p.num)+1;
+
+  $('name').value='';
+
+  $('photo').value='';
+
+};
+
+
+/* =========================
+   新規
+========================= */
+
+$('new').onclick=()=>{
+
+  $('num').value=
+    roster.length+1;
+
+  $('name').value='';
+
+  $('photo').value='';
+
+  $('name').focus();
+
+};
+
+
+/* =========================
+   ボール
+========================= */
+
+$('ball').onclick=()=>{
+
+  if(ball){
+
+    ball.remove();
+
+    ball=null;
+
+    return;
+
+  }
+
+  ball=document.createElement('div');
+
+  ball.className='ball';
+
+  ball.textContent='⚽';
+
+  ball.style.left='50%';
+
+  ball.style.top='50%';
+
+  pitch.appendChild(ball);
+
+  dragify(ball);
+
+};
+  /* =========================
+   パス線モード
+========================= */
+
+$('arrow').onclick=()=>{
+
+  arrowMode=!arrowMode;
+
+  $('arrow').classList.toggle(
+    'primary',
+    arrowMode
+  );
+
+};
+
+
+/* =========================
+   パス線を描く
+========================= */
+
+let start=null;
+
+pitch.addEventListener(
+  'pointerdown',
+  e=>{
+
+    if(!arrowMode)return;
+
+    if(e.target!==pitch)return;
+
+    const r=
+      pitch.getBoundingClientRect();
+
+    start={
+
+      x:e.clientX-r.left,
+
+      y:e.clientY-r.top
+
+    };
+
+  }
+);
+
+
+pitch.addEventListener(
+  'pointerup',
+  e=>{
+
+    if(!arrowMode)return;
+
+    if(!start)return;
+
+    const r=
+      pitch.getBoundingClientRect();
+
+    const x=
+      e.clientX-r.left;
+
+    const y=
+      e.clientY-r.top;
+
+    const dx=
+      x-start.x;
+
+    const dy=
+      y-start.y;
+
+    const len=
+      Math.hypot(dx,dy);
+
+    if(len>20){
+
+      const a=
+        document.createElement('div');
+
+      a.className='arrow';
+
+      a.style.left=
+        start.x+'px';
+
+      a.style.top=
+        start.y+'px';
+
+      a.style.width=
+        len+'px';
+
+      a.style.transform=
+        `rotate(${Math.atan2(dy,dx)}rad)`;
+
+      pitch.appendChild(a);
+
+      arrows.push(a);
+
+    }
+
+    start=null;
+
+  }
+);
+
+
+/* =========================
+   クリア
+========================= */
+
+$('clear').onclick=()=>{
+
+  pitch.querySelectorAll(
+    '.player,.ball,.arrow'
+  ).forEach(
+    e=>e.remove()
+  );
+
+  arrows=[];
+
+  ball=null;
+
+};
+
+
+/* =========================
+   フォーメーション
+========================= */
+
+const forms={
+
+  '4-4-2':[
+
+    [8,50],
+
+    [22,20],
+    [22,40],
+    [22,60],
+    [22,80],
+
+    [43,20],
+    [43,40],
+    [43,60],
+    [43,80],
+
+    [68,38],
+    [68,62]
+
+  ],
+
+  '4-3-3':[
+
+    [8,50],
+
+    [22,20],
+    [22,40],
+    [22,60],
+    [22,80],
+
+    [45,30],
+    [45,50],
+    [45,70],
+
+    [68,25],
+    [72,50],
+    [68,75]
+
+  ],
+
+  '3-5-2':[
+
+    [8,50],
+
+    [23,30],
+    [23,50],
+    [23,70],
+
+    [43,15],
+    [43,35],
+    [43,50],
+    [43,65],
+    [43,85],
+
+    [68,38],
+    [68,62]
+
+  ]
+
+};
+
+
+document.querySelectorAll(
+  '[data-f]'
+).forEach(btn=>{
+
+  btn.onclick=()=>{
+
+    const positions=
+      forms[btn.dataset.f];
+
+    /* ピッチ上の選手だけ消す */
+
+    pitch.querySelectorAll(
+      '.player'
+    ).forEach(
+      e=>e.remove()
+    );
+
+    /* 登録選手から11人配置 */
+
+    roster.slice(0,11).forEach(
+      (p,i)=>{
+
+        const pos=
+          positions[i];
+
+        if(!pos)return;
+
+        const e=
+          document.createElement('div');
+
+        e.className='player';
+
+        e.dataset.id=p.id;
+
+        e.style.left=
+          pos[0]+'%';
+
+        e.style.top=
+          pos[1]+'%';
+
+        e.innerHTML=`
+
+          ${
+            p.photo
+            ? `<img src="${p.photo}">`
+            : `${esc(p.num)}`
+          }
+
+          <span class="num">
+            ${esc(p.num)}
+          </span>
+
+          <span class="playerName">
+            ${esc(p.name)}
+          </span>
+
+        `;
+
+        pitch.appendChild(e);
+
+        dragify(e);
+
+      }
+    );
+
+  };
+
+});
+
+
+/* =========================
+   保存
+========================= */
+
+$('save').onclick=()=>{
+
+  try{
+
+    const board=[
+
+      ...pitch.querySelectorAll(
+        '.player'
+      )
+
+    ].map(e=>({
+
+      id:e.dataset.id,
+
+      x:e.style.left,
+
+      y:e.style.top
+
+    }));
+
+
+    const bench=[
+
+      ...document.querySelectorAll(
+        '#benchPlayers .benchPlayer'
+      )
+
+    ].map(
+      e=>e.dataset.id
+    );
+
+
+    const data={
+
+      roster:roster,
+
+      memo:$('memo').value,
+
+      board:board,
+
+      bench:bench,
+
+      ball:ball
+
+        ? {
+
+            x:ball.style.left,
+
+            y:ball.style.top
+
+          }
+
+        : null
+
+    };
+
+
+    localStorage.setItem(
+
+      'saganBoard',
+
+      JSON.stringify(data)
+
+    );
+
+
+    alert('保存しました！');
+
+
+  }catch(e){
+
+    alert(
+      '保存できません。写真サイズを小さくしてください。'
+    );
+
+  }
+
+};
+  /* =========================
+   保存
+========================= */
+
+$('save').onclick=()=>{
+
+  try{
+
+    const board=[
+      ...pitch.querySelectorAll('.player')
+    ].map(e=>({
+      id:e.dataset.id,
+      x:e.style.left,
+      y:e.style.top
+    }));
+
+    const bench=[
+      ...document.querySelectorAll(
+        '#benchPlayers .benchPlayer'
+      )
+    ].map(e=>e.dataset.id);
+
+    const data={
+      roster:roster,
+      memo:$('memo').value,
+      board:board,
+      bench:bench,
+      ball:ball
+        ? {
+            x:ball.style.left,
+            y:ball.style.top
+          }
+        : null
+    };
+
+    localStorage.setItem(
+      'saganBoard',
+      JSON.stringify(data)
+    );
+
+    alert('保存しました！');
+
+  }catch(e){
+
+    alert(
+      '保存できません。写真サイズを小さくしてください。'
+    );
+
+  }
+
+};
+
+
+/* =========================
+   読み込み
+========================= */
+
+$('load').onclick=()=>{
+
+  try{
+
+    const s=
+      localStorage.getItem('saganBoard');
+
+    if(!s){
+
+      alert('保存データがありません');
+
+      return;
+
+    }
+
+    const d=JSON.parse(s);
+
+    roster=d.roster||[];
+
+    $('memo').value=d.memo||'';
+
+    render();
+
+    /* 盤面をクリア */
+
+    pitch.querySelectorAll(
+      '.player,.ball,.arrow'
+    ).forEach(e=>e.remove());
+
+    arrows=[];
+
+    ball=null;
+
+    /* ピッチ選手 */
+
+    (d.board||[]).forEach(p=>{
+
+      if(
+        roster.some(
+          x=>String(x.id)===String(p.id)
+        )
+      ){
+
+        place(p.id);
+
+        const all=
+          pitch.querySelectorAll('.player');
+
+        const e=
+          all[all.length-1];
+
+        e.style.left=p.x;
+        e.style.top=p.y;
+
+      }
+
+    });
+
+    /* ベンチ */
+
+    $('benchPlayers').innerHTML='';
+
+    (d.bench||[]).forEach(id=>{
+
+      if(
+        roster.some(
+          x=>String(x.id)===String(id)
+        )
+      ){
+
+        placeBench(id);
+
+      }
+
+    });
+
+    /* ボール */
+
+    if(d.ball){
+
+      ball=document.createElement('div');
+
+      ball.className='ball';
+
+      ball.textContent='⚽';
+
+      ball.style.left=d.ball.x;
+
+      ball.style.top=d.ball.y;
+
+      pitch.appendChild(ball);
+
+      dragify(ball);
+
+    }
+
+    updateBenchCount();
+
+    alert('読み込みました！');
+
+  }catch(e){
+
+    alert('読み込みに失敗しました。');
+
+  }
+
+};
+
+
+/* =========================
+   初期表示
+========================= */
+
+render();
+
+</script>
+
+</body>
+</html>
