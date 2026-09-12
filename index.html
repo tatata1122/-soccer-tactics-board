@@ -8,9 +8,59 @@
 const pitch=document.querySelector('#pitch');let roster=[],arrows=[],arrowMode=false,ball=null,drag=null;
 const $=id=>document.getElementById(id), esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 function photo(f){return new Promise(r=>{if(!f)return r('');let x=new FileReader;x.onload=()=>r(x.result);x.readAsDataURL(f)})}
-function render(){ $('count').textContent=`登録選手：${roster.length} / 50人`; $('players').innerHTML=roster.map(p=>`<div class="p">${p.photo?`<img class="thumb" src="${p.photo}">`:`<div class="thumb">${p.num}</div>`}<span>${p.num}　${esc(p.name)}</span><button onclick="place('${p.id}')">配置</button><button class="danger" onclick="del('${p.id}')">削除</button></div>`).join('')}
-window.del=id=>{roster=roster.filter(p=>p.id!==id);render()}
-window.place=id=>{let p=roster.find(x=>x.id===id);if(!p)return;let e=document.createElement('div');e.className='player';e.dataset.id=id;e.style.left='50%';e.style.top='50%';e.innerHTML=p.photo?`<img src="${p.photo}"><span class="num">${p.num}</span>`:`${p.num}<span class="num">${p.num}</span>`;pitch.appendChild(e);dragify(e)}
+function render(){
+  $('count').textContent=`登録選手：${roster.length} / 50人`;
+
+  $('players').innerHTML=roster.map(p=>`
+    <div class="p">
+      ${p.photo
+        ? `<img class="thumb" src="${p.photo}">`
+        : `<div class="thumb">${p.num}</div>`}
+      <span>${p.num}　${esc(p.name)}</span>
+      <button class="placeBtn" data-id="${p.id}">配置</button>
+      <button class="deleteBtn danger" data-id="${p.id}">削除</button>
+    </div>
+  `).join('');
+
+  document.querySelectorAll('.placeBtn').forEach(btn=>{
+    btn.addEventListener('click',()=>{
+      place(btn.dataset.id);
+    });
+  });
+
+  document.querySelectorAll('.deleteBtn').forEach(btn=>{
+    btn.addEventListener('click',()=>{
+      del(btn.dataset.id);
+    });
+  });
+}
+
+function del(id){
+  roster=roster.filter(p=>String(p.id)!==String(id));
+  render();
+}
+
+function place(id){
+  let p=roster.find(x=>String(x.id)===String(id));
+  if(!p)return;
+
+  let e=document.createElement('div');
+  e.className='player';
+  e.dataset.id=id;
+  e.style.left='50%';
+  e.style.top='50%';
+
+  if(p.photo){
+    e.innerHTML=`<img src="${p.photo}"><span class="num">${p.num}</span>`;
+  }else{
+    e.innerHTML=`${p.num}<span class="num">${p.num}</span>`;
+  }
+
+  pitch.appendChild(e);
+  dragify(e);
+}
+
+
 function dragify(e){e.onpointerdown=x=>{if(arrowMode)return;drag=e;e.setPointerCapture(x.pointerId)};e.onpointermove=x=>{if(drag!==e)return;let r=pitch.getBoundingClientRect();e.style.left=Math.max(3,Math.min(97,(x.clientX-r.left)/r.width*100))+'%';e.style.top=Math.max(5,Math.min(95,(x.clientY-r.top)/r.height*100))+'%'};e.onpointerup=()=>drag=null}
 $('reg').onclick=async()=>{if(roster.length>=50)return alert('選手は最大50人です');if(!$('name').value.trim())return alert('名前を入力してください');roster.push({id:Date.now()+Math.random(),num:$('num').value,name:$('name').value.trim(),photo:await photo($('photo').files[0])});render();$('new').click()}
 $('new').onclick=()=>{$('num').value=roster.length+1;$('name').value='';$('photo').value=''}
