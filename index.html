@@ -1,27 +1,699 @@
-⚽ サガン式 サッカー解説ボード
-選手登録（最大50人）
-顔写真
-背番号
-名前
-選手を登録
-＋新規
-登録選手：0 / 50人
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>サガン式 サッカー解説ボード</title>
 
-「ピッチ」でピッチへ、「ベンチ」で控え選手欄へ配置できます。
-4-4-2
-4-3-3
-3-5-2
-⚽ ボール
-↗ パス線
-クリア
-保存
-読み込み
-解説メモ
-選手とボールはドラッグ。パス線モードではピッチをドラッグ。
+<style>
+*{box-sizing:border-box}
+
+body{
+  margin:0;
+  font-family:Arial,sans-serif;
+  background:#f3f6fa;
+  color:#123;
+}
+
+header{
+  padding:14px 18px;
+  background:#00529b;
+  color:white;
+  font-size:22px;
+  font-weight:bold;
+}
+
+.wrap{
+  display:grid;
+  grid-template-columns:380px 1fr;
+  gap:16px;
+  padding:16px;
+  max-width:1450px;
+  margin:auto;
+}
+
+.card{
+  background:white;
+  border-radius:16px;
+  padding:16px;
+  box-shadow:0 3px 14px #0001;
+}
+
+h2{
+  margin:0 0 12px;
+  font-size:20px;
+}
+
+.row{
+  display:flex;
+  gap:8px;
+}
+
+.row>*{
+  flex:1;
+}
+
+label{
+  display:block;
+  font-weight:bold;
+  font-size:14px;
+  margin:8px 0 4px;
+}
+
+input{
+  width:100%;
+  padding:11px;
+  border:1px solid #ccd8e2;
+  border-radius:10px;
+}
+
+button{
+  border:0;
+  border-radius:10px;
+  padding:11px 13px;
+  background:#e8f2fb;
+  color:#00529b;
+  font-weight:bold;
+  cursor:pointer;
+}
+
+button.primary{
+  background:#00529b;
+  color:#fff;
+}
+
+button.danger{
+  background:#ffe8e8;
+  color:#b00;
+}
+
+.tools{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+  margin-bottom:10px;
+}
+
+.hint{
+  font-size:13px;
+  color:#678;
+  margin:8px 0;
+}
+
+.status{
+  font-weight:bold;
+  color:#00529b;
+  margin:8px 0;
+}
+
+#players{
+  max-height:420px;
+  overflow:auto;
+}
+
+.p{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  padding:7px;
+  border-bottom:1px solid #eee;
+}
+
+.thumb{
+  width:42px;
+  height:42px;
+  border-radius:50%;
+  object-fit:cover;
+  background:#eee;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-weight:bold;
+  flex-shrink:0;
+}
+
+.p button{
+  margin-left:auto;
+  padding:7px;
+}
+
+.p .benchBtn{
+  margin-left:0;
+}
+
+/* ピッチ */
+#pitch{
+  position:relative;
+  width:100%;
+  aspect-ratio:1.55;
+  background:repeating-linear-gradient(
+    0deg,
+    #138b49 0 9%,
+    #108044 9% 18%
+  );
+  border:4px solid white;
+  border-radius:8px;
+  overflow:hidden;
+  touch-action:none;
+}
+
+.line{
+  position:absolute;
+  border:2px solid #fffc;
+}
+
+.mid{
+  left:50%;
+  top:0;
+  height:100%;
+  border-left:2px solid white;
+}
+
+.circle{
+  left:50%;
+  top:50%;
+  width:19%;
+  aspect-ratio:1;
+  border-radius:50%;
+  transform:translate(-50%,-50%);
+}
+
+.boxL{
+  left:0;
+  top:25%;
+  width:16%;
+  height:50%;
+}
+
+.boxR{
+  right:0;
+  top:25%;
+  width:16%;
+  height:50%;
+}
+
+/* 選手 */
+.player{
+  position:absolute;
+  width:58px;
+  height:58px;
+  border-radius:50%;
+  background:#00529b;
+  color:#fff;
+  border:3px solid #fff;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-weight:bold;
+  transform:translate(-50%,-50%);
+  z-index:5;
+  touch-action:none;
+  user-select:none;
+}
+
+.player img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  border-radius:50%;
+}
+
+.playerName{
+  position:absolute;
+  top:61px;
+  left:50%;
+  transform:translateX(-50%);
+  white-space:nowrap;
+  background:white;
+  color:#123;
+  border-radius:6px;
+  padding:2px 6px;
+  font-size:12px;
+  font-weight:bold;
+  box-shadow:0 1px 4px #0003;
+}
+
+.num{
+  position:absolute;
+  bottom:-13px;
+  background:white;
+  color:#00529b;
+  border-radius:8px;
+  padding:1px 5px;
+  font-size:11px;
+}
+
+/* ボール */
+.ball{
+  position:absolute;
+  z-index:6;
+  font-size:34px;
+  transform:translate(-50%,-50%);
+  touch-action:none;
+  user-select:none;
+}
+
+/* パス線 */
+.arrow{
+  position:absolute;
+  height:4px;
+  background:white;
+  transform-origin:left center;
+  z-index:4;
+}
+
+.arrow:after{
+  content:"";
+  position:absolute;
+  right:-2px;
+  top:-6px;
+  border-left:13px solid white;
+  border-top:8px solid transparent;
+  border-bottom:8px solid transparent;
+}
+
+/* ベンチ */
+#bench{
+  margin-top:16px;
+  padding:14px;
+  background:#eef3f7;
+  border-radius:12px;
+  border:2px solid #d7e0e8;
+  min-height:130px;
+}
+
+.benchTitle{
+  font-weight:bold;
+  color:#00529b;
+  margin-bottom:10px;
+}
+
+#benchPlayers{
+  display:flex;
+  flex-wrap:wrap;
+  gap:16px;
+  min-height:75px;
+}
+
+.benchPlayer{
+  position:relative;
+  width:80px;
+  min-height:75px;
+  text-align:center;
+  cursor:grab;
+  user-select:none;
+}
+
+.benchPlayer img,
+.benchPhoto{
+  width:50px;
+  height:50px;
+  border-radius:50%;
+  object-fit:cover;
+  background:#00529b;
+  color:white;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  margin:auto;
+  font-weight:bold;
+}
+
+.benchName{
+  display:block;
+  font-size:12px;
+  font-weight:bold;
+  margin-top:4px;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+
+.benchNum{
+  font-size:11px;
+  color:#00529b;
+}
+
+@media(max-width:850px){
+  .wrap{
+    grid-template-columns:1fr;
+    padding:9px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<header>⚽ サガン式 サッカー解説ボード</header>
+
+<div class="wrap">
+
+<section class="card">
+
+<h2>選手登録（最大50人）</h2>
+
+<label>顔写真</label>
+<input id="photo" type="file" accept="image/*">
+
+<div class="row">
+
+<div>
+<label>背番号</label>
+<input id="num" type="number" min="1" max="99" value="1">
+</div>
+
+<div>
+<label>名前</label>
+<input id="name" placeholder="選手名">
+</div>
+
+</div>
+
+<div class="row" style="margin-top:10px">
+<button class="primary" id="reg">選手を登録</button>
+<button id="new">＋新規</button>
+</div>
+
+<div class="status" id="count">登録選手：0 / 50人</div>
+
+<div id="players"></div>
+
+<div class="hint">
+一覧の「ピッチ」でピッチへ、「ベンチ」で控え選手へ配置できます。
+</div>
+
+</section>
 
 
+<section class="card">
 
+<div class="tools">
 
+<button data-f="4-4-2">4-4-2</button>
+<button data-f="4-3-3">4-3-3</button>
+<button data-f="3-5-2">3-5-2</button>
+
+<button id="ball">⚽ ボール</button>
+<button id="arrow">↗ パス線</button>
+<button id="clear">クリア</button>
+<button id="save" class="primary">保存</button>
+<button id="load">読み込み</button>
+
+</div>
+
+<label>解説メモ</label>
+<input id="memo" placeholder="例：右サイドから中央へ展開">
+
+<div class="hint">
+選手とボールはドラッグできます。パス線モードではピッチをドラッグしてください。
+</div>
+
+<div id="pitch">
+
+<div class="line mid"></div>
+<div class="line circle"></div>
+<div class="line boxL"></div>
+<div class="line boxR"></div>
+
+</div>
+
+<!-- ベンチ -->
+<div id="bench">
+
+<div class="benchTitle">
 🪑 ベンチ（控え選手）
-0人
-「ベンチ」で控え選手をここに配置できます
+<span id="benchCount">0人</span>
+</div>
+
+<div id="benchPlayers"></div>
+
+</div>
+
+</section>
+
+</div>
+
+
+<script>
+
+const pitch=document.querySelector('#pitch');
+
+let roster=[];
+let arrows=[];
+let arrowMode=false;
+let ball=null;
+let drag=null;
+
+
+/* ID取得 */
+const $=id=>document.getElementById(id);
+
+
+/* HTMLエスケープ */
+const esc=s=>String(s).replace(
+  /[&<>"']/g,
+  c=>({
+    '&':'&amp;',
+    '<':'&lt;',
+    '>':'&gt;',
+    '"':'&quot;',
+    "'":'&#39;'
+  }[c])
+);
+
+
+/* 写真 */
+function photo(f){
+  return new Promise(r=>{
+    if(!f)return r('');
+
+    let x=new FileReader();
+
+    x.onload=()=>r(x.result);
+
+    x.readAsDataURL(f);
+  });
+}
+
+
+/* 選手一覧表示 */
+function render(){
+
+  $('count').textContent=
+    `登録選手：${roster.length} / 50人`;
+
+  $('players').innerHTML=
+    roster.map(p=>`
+
+      <div class="p">
+
+        ${
+          p.photo
+          ? `<img class="thumb" src="${p.photo}">`
+          : `<div class="thumb">${p.num}</div>`
+        }
+
+        <span>
+          ${p.num}　${esc(p.name)}
+        </span>
+
+        <button class="placeBtn" data-id="${p.id}">
+          ピッチ
+        </button>
+
+        <button class="benchBtn" data-id="${p.id}">
+          ベンチ
+        </button>
+
+        <button class="danger delBtn" data-id="${p.id}">
+          削除
+        </button>
+
+      </div>
+
+    `).join('');
+
+  document.querySelectorAll('.placeBtn').forEach(btn=>{
+    btn.onclick=()=>{
+      place(btn.dataset.id);
+    };
+  });
+
+  document.querySelectorAll('.benchBtn').forEach(btn=>{
+    btn.onclick=()=>{
+      placeBench(btn.dataset.id);
+    };
+  });
+
+  document.querySelectorAll('.delBtn').forEach(btn=>{
+    btn.onclick=()=>{
+      roster=roster.filter(
+        p=>String(p.id)!==String(btn.dataset.id)
+      );
+      render();
+    };
+  });
+
+}
+
+
+/* ピッチに配置 */
+function place(id){
+
+  let p=roster.find(
+    x=>String(x.id)===String(id)
+  );
+
+  if(!p)return;
+
+  let e=document.createElement('div');
+
+  e.className='player';
+
+  e.dataset.id=id;
+
+  e.style.left='50%';
+  e.style.top='50%';
+
+  if(p.photo){
+
+    e.innerHTML=`
+      <img src="${p.photo}">
+      <span class="num">${p.num}</span>
+      <span class="playerName">${esc(p.name)}</span>
+    `;
+
+  }else{
+
+    e.innerHTML=`
+      ${p.num}
+      <span class="num">${p.num}</span>
+      <span class="playerName">${esc(p.name)}</span>
+    `;
+
+  }
+
+  pitch.appendChild(e);
+
+  dragify(e);
+
+}
+
+
+/* ベンチに配置 */
+function placeBench(id){
+
+  let p=roster.find(
+    x=>String(x.id)===String(id)
+  );
+
+  if(!p)return;
+
+  let e=document.createElement('div');
+
+  e.className='benchPlayer';
+
+  e.dataset.id=id;
+
+  if(p.photo){
+
+    e.innerHTML=`
+      <img src="${p.photo}">
+      <span class="benchName">${esc(p.name)}</span>
+      <span class="benchNum">背番号 ${p.num}</span>
+    `;
+
+  }else{
+
+    e.innerHTML=`
+      <div class="benchPhoto">${p.num}</div>
+      <span class="benchName">${esc(p.name)}</span>
+      <span class="benchNum">背番号 ${p.num}</span>
+    `;
+
+  }
+
+  $('benchPlayers').appendChild(e);
+
+  updateBenchCount();
+
+}
+
+
+/* ベンチ人数 */
+function updateBenchCount(){
+
+  let n=document.querySelectorAll(
+    '#benchPlayers .benchPlayer'
+  ).length;
+
+  $('benchCount').textContent=`${n}人`;
+
+}
+
+
+/* ドラッグ */
+function dragify(e){
+
+  e.onpointerdown=x=>{
+
+    if(arrowMode)return;
+
+    drag=e;
+
+    e.setPointerCapture(x.pointerId);
+
+  };
+
+
+  e.onpointermove=x=>{
+
+    if(drag!==e)return;
+
+    let r=pitch.getBoundingClientRect();
+
+    e.style.left=
+      Math.max(
+        3,
+        Math.min(
+          97,
+          (x.clientX-r.left)/r.width*100
+        )
+      )+'%';
+
+    e.style.top=
+      Math.max(
+        5,
+        Math.min(
+          95,
+          (x.clientY-r.top)/r.height*100
+        )
+      )+'%';
+
+  };
+
+
+  e.onpointerup=()=>{
+    drag=null;
+  };
+
+}
+
+
+/* 選手登録 */
+$('reg').onclick=async()=>{
+
+  if(roster.length>=50){
+    return alert('選手は最大50人です');
+  }
+
+  if(!$('name').value.trim()){
+    return alert('名前を入力してください');
+  }
+
+  let p={
+    id:String(Date.now())+Math.random(),
+    num:$('num').value,
+    name:$('name').value.trim(),
+    photo:await photo($('photo')
