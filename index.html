@@ -697,4 +697,324 @@ $('reg').onclick=async()=>{
     num:$('num').value,
     name:$('name').value.trim(),
     photo:await photo($('photo')
-<button onclick="alert('動いてる！')">テスト</button>
+.files[0])
+  };
+
+  roster.push(p);
+
+  render();
+
+  $('new').click();
+};
+
+
+/* 新規 */
+$('new').onclick=()=>{
+
+  $('num').value=roster.length+1;
+  $('name').value='';
+  $('photo').value='';
+
+};
+
+
+/* ボール */
+$('ball').onclick=()=>{
+
+  if(ball){
+    ball.remove();
+  }
+
+  ball=document.createElement('div');
+
+  ball.className='ball';
+
+  ball.textContent='⚽';
+
+  ball.style.left='50%';
+  ball.style.top='50%';
+
+  pitch.appendChild(ball);
+
+  dragify(ball);
+
+};
+
+
+/* クリア */
+$('clear').onclick=()=>{
+
+  pitch.querySelectorAll(
+    '.player,.ball,.arrow'
+  ).forEach(e=>e.remove());
+
+  arrows=[];
+
+  ball=null;
+
+};
+
+
+/* パス線 */
+$('arrow').onclick=()=>{
+
+  arrowMode=!arrowMode;
+
+  $('arrow').classList.toggle(
+    'primary',
+    arrowMode
+  );
+
+};
+
+
+/* パス線を引く */
+let start=null;
+
+pitch.onpointerdown=e=>{
+
+  if(!arrowMode)return;
+
+  if(e.target!==pitch)return;
+
+  let r=pitch.getBoundingClientRect();
+
+  start={
+    x:e.clientX-r.left,
+    y:e.clientY-r.top
+  };
+
+};
+
+
+pitch.onpointerup=e=>{
+
+  if(!arrowMode)return;
+
+  if(!start)return;
+
+  let r=pitch.getBoundingClientRect();
+
+  let x=e.clientX-r.left;
+  let y=e.clientY-r.top;
+
+  let dx=x-start.x;
+  let dy=y-start.y;
+
+  let l=Math.hypot(dx,dy);
+
+  if(l>20){
+
+    let a=document.createElement('div');
+
+    a.className='arrow';
+
+    a.style.left=start.x+'px';
+    a.style.top=start.y+'px';
+
+    a.style.width=l+'px';
+
+    a.style.transform=
+      `rotate(${Math.atan2(dy,dx)}rad)`;
+
+    pitch.appendChild(a);
+
+    arrows.push(a);
+
+  }
+
+  start=null;
+
+};
+
+
+/* フォーメーション */
+const forms={
+
+  '4-4-2':[
+    [8,50],
+    [22,20],
+    [22,40],
+    [22,60],
+    [22,80],
+    [43,20],
+    [43,40],
+    [43,60],
+    [43,80],
+    [68,38],
+    [68,62]
+  ],
+
+  '4-3-3':[
+    [8,50],
+    [22,20],
+    [22,40],
+    [22,60],
+    [22,80],
+    [45,30],
+    [45,50],
+    [45,70],
+    [68,25],
+    [72,50],
+    [68,75]
+  ],
+
+  '3-5-2':[
+    [8,50],
+    [23,30],
+    [23,50],
+    [23,70],
+    [43,15],
+    [43,35],
+    [43,50],
+    [43,65],
+    [43,85],
+    [68,38],
+    [68,62]
+  ]
+
+};
+
+
+document.querySelectorAll('[data-f]').forEach(btn=>{
+
+  btn.onclick=()=>{
+
+    $('clear').click();
+
+    forms[btn.dataset.f].forEach((pos,i)=>{
+
+      let e=document.createElement('div');
+
+      e.className='player';
+
+      e.textContent=i+1;
+
+      e.style.left=pos[0]+'%';
+      e.style.top=pos[1]+'%';
+
+      pitch.appendChild(e);
+
+      dragify(e);
+
+    });
+
+  };
+
+});
+
+
+/* 保存 */
+function getData(){
+
+  return {
+
+    roster:roster,
+
+    memo:$('memo').value,
+
+    board:[
+      ...pitch.querySelectorAll('.player')
+    ].map(e=>({
+
+      id:e.dataset.id,
+      x:e.style.left,
+      y:e.style.top
+
+    })),
+
+    ball:ball
+      ? {
+          x:ball.style.left,
+          y:ball.style.top
+        }
+      : null
+
+  };
+
+}
+
+
+$('save').onclick=()=>{
+
+  try{
+
+    localStorage.setItem(
+      'saganBoard',
+      JSON.stringify(getData())
+    );
+
+    alert('保存しました');
+
+  }catch(e){
+
+    alert(
+      '保存できません。写真サイズを小さくしてください'
+    );
+
+  }
+
+};
+
+
+/* 読み込み */
+$('load').onclick=()=>{
+
+  let s=localStorage.getItem(
+    'saganBoard'
+  );
+
+  if(!s){
+
+    return alert(
+      '保存データがありません'
+    );
+
+  }
+
+  let d=JSON.parse(s);
+
+  roster=d.roster||[];
+
+  render();
+
+  $('memo').value=d.memo||'';
+
+  $('clear').click();
+
+
+  (d.board||[]).forEach(p=>{
+
+    let player=roster.find(
+      x=>String(x.id)===String(p.id)
+    );
+
+    if(!player)return;
+
+    place(p.id);
+
+    let e=pitch.lastElementChild;
+
+    e.style.left=p.x;
+    e.style.top=p.y;
+
+  });
+
+
+  if(d.ball){
+
+    $('ball').click();
+
+    ball.style.left=d.ball.x;
+    ball.style.top=d.ball.y;
+
+  }
+
+
+  alert('読み込みました');
+
+};
+
+
+/* 初期表示 */
+render();
