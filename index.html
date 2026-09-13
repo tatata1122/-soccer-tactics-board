@@ -60,11 +60,12 @@ label{
   margin:8px 0 4px;
 }
 
-input{
+input,select{
   width:100%;
   padding:11px;
   border:1px solid #ccd8e2;
   border-radius:10px;
+  background:white;
 }
 
 button{
@@ -79,7 +80,7 @@ button{
 
 button.primary{
   background:#00529b;
-  color:#fff;
+  color:white;
 }
 
 button.danger{
@@ -140,6 +141,26 @@ button.danger{
 .p button{
   padding:7px 8px;
   flex-shrink:0;
+}
+
+.teamBox{
+  background:#eef5fb;
+  border-radius:12px;
+  padding:12px;
+  margin-bottom:14px;
+}
+
+.teamTitle{
+  font-weight:bold;
+  color:#00529b;
+  margin-bottom:8px;
+}
+
+.saveBox{
+  background:#f5f7f9;
+  border-radius:12px;
+  padding:12px;
+  margin-top:12px;
 }
 
 #pitch{
@@ -356,62 +377,94 @@ button.danger{
 
 <section class="card">
 
+<h2>チーム・選手登録</h2>
+
+<div class="teamBox">
+
+<div class="teamTitle">
+🏳️ チーム選択
+</div>
+
+<label>チーム</label>
+
+<select id="team">
+<option value="sagan">サガン鳥栖</option>
+<option value="opponent">相手チーム</option>
+<option value="other">その他</option>
+</select>
+
+<label>チーム名</label>
+
+<input
+id="teamName"
+type="text"
+value="サガン鳥栖"
+placeholder="チーム名">
+
+</div>
+
 <h2>選手登録（最大50人）</h2>
 
 <label>顔写真</label>
-<input id="photo" type="file" accept="image/*">
+
+<input
+id="photo"
+type="file"
+accept="image/*">
 
 <div class="row">
 
 <div>
 <label>背番号</label>
+
 <input
-  id="num"
-  type="number"
-  min="1"
-  max="99"
-  value="1">
+id="num"
+type="number"
+min="1"
+max="99"
+value="1">
 </div>
 
 <div>
 <label>名前</label>
+
 <input
-  id="name"
-  type="text"
-  placeholder="選手名">
+id="name"
+type="text"
+placeholder="選手名">
 </div>
 
 </div>
 
 <div
-  class="row"
-  style="margin-top:10px">
+class="row"
+style="margin-top:10px">
 
 <button
-  class="primary"
-  id="reg"
-  type="button">
+class="primary"
+id="reg"
+type="button">
 選手を登録
 </button>
 
 <button
-  id="new"
-  type="button">
+id="new"
+type="button">
 ＋新規
 </button>
 
 </div>
 
 <div
-  class="status"
-  id="count">
+class="status"
+id="count">
 登録選手：0 / 50人
 </div>
 
 <div id="players"></div>
 
 <div class="hint">
-一覧の「ピッチ」でピッチへ、
+「ピッチ」でピッチへ配置、
 「ベンチ」で控え選手へ配置できます。
 </div>
 
@@ -422,53 +475,28 @@ button.danger{
 
 <div class="tools">
 
-<button
-  type="button"
-  data-f="4-4-2">
+<button type="button" data-f="4-4-2">
 4-4-2
 </button>
 
-<button
-  type="button"
-  data-f="4-3-3">
+<button type="button" data-f="4-3-3">
 4-3-3
 </button>
 
-<button
-  type="button"
-  data-f="3-5-2">
+<button type="button" data-f="3-5-2">
 3-5-2
 </button>
 
-<button
-  type="button"
-  id="ball">
+<button type="button" id="ball">
 ⚽ ボール
 </button>
 
-<button
-  type="button"
-  id="arrow">
+<button type="button" id="arrow">
 ↗ パス線
 </button>
 
-<button
-  type="button"
-  id="clear">
+<button type="button" id="clear">
 クリア
-</button>
-
-<button
-  type="button"
-  id="save"
-  class="primary">
-保存
-</button>
-
-<button
-  type="button"
-  id="load">
-読み込み
 </button>
 
 </div>
@@ -476,12 +504,33 @@ button.danger{
 <label>解説メモ</label>
 
 <input
-  id="memo"
-  type="text"
-  placeholder="例：右サイドから中央へ展開">
+id="memo"
+type="text"
+placeholder="例：右サイドから中央へ展開">
+
+<div class="saveBox">
+
+<div class="row">
+
+<button
+type="button"
+id="save"
+class="primary">
+💾 保存
+</button>
+
+<button
+type="button"
+id="load">
+📂 読み込み
+</button>
+
+</div>
+
+</div>
 
 <div class="hint">
-選手とボールはドラッグできます。
+選手・ボールはドラッグできます。
 パス線モードではピッチをドラッグしてください。
 </div>
 
@@ -516,10 +565,6 @@ button.danger{
 'use strict';
 
 
-/* =========================
-   共通
-========================= */
-
 const $ = id => document.getElementById(id);
 
 const pitch = $('pitch');
@@ -543,16 +588,16 @@ let start = null;
 
 function esc(value){
 
-  return String(value ?? '').replace(
-    /[&<>"']/g,
-    c => ({
-      '&':'&amp;',
-      '<':'&lt;',
-      '>':'&gt;',
-      '"':'&quot;',
-      "'":'&#39;'
-    }[c])
-  );
+return String(value ?? '').replace(
+/[&<>"']/g,
+c => ({
+'&':'&amp;',
+'<':'&lt;',
+'>':'&gt;',
+'"':'&quot;',
+"'":'&#39;'
+}[c])
+);
 
 }
 
@@ -563,172 +608,177 @@ function esc(value){
 
 function readPhoto(file){
 
-  return new Promise(resolve => {
+return new Promise(resolve => {
 
-    if(!file){
+if(!file){
 
-      resolve('');
+resolve('');
 
-      return;
+return;
 
-    }
+}
 
-    const reader = new FileReader();
+const reader = new FileReader();
 
-    reader.onload = () => {
+reader.onload = () => {
 
-      resolve(reader.result);
+resolve(reader.result);
 
-    };
+};
 
-    reader.onerror = () => {
+reader.onerror = () => {
 
-      resolve('');
+resolve('');
 
-    };
+};
 
-    reader.readAsDataURL(file);
+reader.readAsDataURL(file);
 
-  });
+});
 
 }
 
 
 /* =========================
-   選手一覧表示
+   選手一覧
 ========================= */
 
 function render(){
 
-  $('count').textContent =
-    `登録選手：${roster.length} / 50人`;
-
-  $('players').innerHTML =
-    roster.map(p => `
-
-      <div class="p">
-
-        ${
-          p.photo
-          ?
-          `<img
-            class="thumb"
-            src="${p.photo}"
-            alt="">`
-
-          :
-
-          `<div class="thumb">
-            ${esc(p.num)}
-          </div>`
-        }
-
-        <span>
-          ${esc(p.num)}　${esc(p.name)}
-        </span>
-
-        <button
-          type="button"
-          class="placeBtn"
-          data-id="${esc(p.id)}">
-          ピッチ
-        </button>
-
-        <button
-          type="button"
-          class="benchBtn"
-          data-id="${esc(p.id)}">
-          ベンチ
-        </button>
-
-        <button
-          type="button"
-          class="danger delBtn"
-          data-id="${esc(p.id)}">
-          削除
-        </button>
-
-      </div>
-
-    `).join('');
+$('count').textContent =
+`登録選手：${roster.length} / 50人`;
 
 
-  document
-    .querySelectorAll('.placeBtn')
-    .forEach(btn => {
+$('players').innerHTML =
+roster.map(p => `
 
-      btn.onclick = () => {
+<div class="p">
 
-        place(btn.dataset.id);
+${
+p.photo
+?
+`<img
+class="thumb"
+src="${p.photo}"
+alt="">`
 
-      };
+:
 
-    });
+`<div class="thumb">
+${esc(p.num)}
+</div>`
+}
 
+<span>
+${esc(p.num)}　${esc(p.name)}
+</span>
 
-  document
-    .querySelectorAll('.benchBtn')
-    .forEach(btn => {
+<button
+type="button"
+class="placeBtn"
+data-id="${esc(p.id)}">
+ピッチ
+</button>
 
-      btn.onclick = () => {
+<button
+type="button"
+class="benchBtn"
+data-id="${esc(p.id)}">
+ベンチ
+</button>
 
-        placeBench(btn.dataset.id);
+<button
+type="button"
+class="danger delBtn"
+data-id="${esc(p.id)}">
+削除
+</button>
 
-      };
+</div>
 
-    });
-
-
-  document
-    .querySelectorAll('.delBtn')
-    .forEach(btn => {
-
-      btn.onclick = () => {
-
-        const id = btn.dataset.id;
-
-        roster = roster.filter(
-          p => String(p.id) !== String(id)
-        );
-
-
-        pitch
-          .querySelectorAll('.player')
-          .forEach(e => {
-
-            if(
-              String(e.dataset.id) === String(id)
-            ){
-
-              e.remove();
-
-            }
-
-          });
+`).join('');
 
 
-        $('benchPlayers')
-          .querySelectorAll('.benchPlayer')
-          .forEach(e => {
+document
+.querySelectorAll('.placeBtn')
+.forEach(btn => {
 
-            if(
-              String(e.dataset.id) === String(id)
-            ){
+btn.onclick = () => {
 
-              e.remove();
+place(btn.dataset.id);
 
-            }
+};
 
-          });
+});
 
 
-        updateBenchCount();
+document
+.querySelectorAll('.benchBtn')
+.forEach(btn => {
 
-        render();
+btn.onclick = () => {
 
-      };
+placeBench(btn.dataset.id);
 
-    });
+};
+
+});
+
+
+document
+.querySelectorAll('.delBtn')
+.forEach(btn => {
+
+btn.onclick = () => {
+
+const id = btn.dataset.id;
+
+
+roster =
+roster.filter(
+p => String(p.id) !== String(id)
+);
+
+
+pitch
+.querySelectorAll('.player')
+.forEach(e => {
+
+if(
+String(e.dataset.id) ===
+String(id)
+){
+
+e.remove();
+
+}
+
+});
+
+
+$('benchPlayers')
+.querySelectorAll('.benchPlayer')
+.forEach(e => {
+
+if(
+String(e.dataset.id) ===
+String(id)
+){
+
+e.remove();
+
+}
+
+});
+
+
+updateBenchCount();
+
+render();
+
+};
+
+});
 
 }
 
@@ -739,39 +789,42 @@ function render(){
 
 function makePlayerElement(p){
 
-  const e = document.createElement('div');
+const e =
+document.createElement('div');
 
-  e.className = 'player';
+e.className =
+'player';
 
-  e.dataset.id = p.id;
-
-
-  e.innerHTML = `
-
-    ${
-      p.photo
-      ?
-      `<img
-        src="${p.photo}"
-        alt="">`
-
-      :
-
-      esc(p.num)
-    }
-
-    <span class="num">
-      ${esc(p.num)}
-    </span>
-
-    <span class="playerName">
-      ${esc(p.name)}
-    </span>
-
-  `;
+e.dataset.id =
+p.id;
 
 
-  return e;
+e.innerHTML = `
+
+${
+p.photo
+?
+`<img
+src="${p.photo}"
+alt="">`
+
+:
+
+esc(p.num)
+}
+
+<span class="num">
+${esc(p.num)}
+</span>
+
+<span class="playerName">
+${esc(p.name)}
+</span>
+
+`;
+
+
+return e;
 
 }
 
@@ -782,1000 +835,1252 @@ function makePlayerElement(p){
 
 function place(id){
 
-  const p =
-    roster.find(
-      x => String(x.id) === String(id)
-    );
-
-  if(!p){
-
-    return;
-
-  }
+const p =
+roster.find(
+x =>
+String(x.id) ===
+String(id)
+);
 
 
-  const old =
-    [...pitch.querySelectorAll('.player')]
-      .find(
-        e => String(e.dataset.id) === String(id)
-      );
+if(!p){
 
-
-  if(old){
-
-    old.style.left = '50%';
-
-    old.style.top = '50%';
-
-    return;
-
-  }
-
-
-  const e =
-    makePlayerElement(p);
-
-  e.style.left = '50%';
-
-  e.style.top = '50%';
-
-  pitch.appendChild(e);
-
-  dragify(e);
+return;
 
 }
 
 
-/* =========================
-   ベンチ配置
+const old =
+[...pitch.querySelectorAll('.player')]
+.find(
+e =>
+String(e.dataset.id) ===
+String(id)
+);
+
+
+if(old){
+
+old.style.left =
+'50%';
+
+old.style.top =
+'50%';
+
+return;
+
+}
+
+
+const e =
+makePlayerElement(p);
+
+
+e.style.left =
+'50%';
+
+e.style.top =
+'50%';
+
+
+pitch.appendChild(e);
+
+dragify(e);
+
+}
+
+
+/* =======================
+     ベンチ配置
+
 ========================= */
 
 function placeBench(id){
 
-  const p =
-    roster.find(
-      x => String(x.id) === String(id)
-    );
+const p =
 
-  if(!p){
+roster.find(
 
-    return;
+x =>
 
-  }
+String(x.id) ===
 
+String(id)
 
-  const exists =
-    [...$('benchPlayers')
-      .querySelectorAll('.benchPlayer')]
-      .some(
-        e => String(e.dataset.id) === String(id)
-      );
+);
 
+if(!p){
 
-  if(exists){
-
-    return;
-
-  }
-
-
-  const e =
-    document.createElement('div');
-
-  e.className = 'benchPlayer';
-
-  e.dataset.id = p.id;
-
-
-  if(p.photo){
-
-    e.innerHTML = `
-
-      <img
-        src="${p.photo}"
-        alt="">
-
-      <span class="benchName">
-        ${esc(p.name)}
-      </span>
-
-      <span class="benchNum">
-        背番号 ${esc(p.num)}
-      </span>
-
-    `;
-
-  }else{
-
-    e.innerHTML = `
-
-      <div class="benchPhoto">
-        ${esc(p.num)}
-      </div>
-
-      <span class="benchName">
-        ${esc(p.name)}
-      </span>
-
-      <span class="benchNum">
-        背番号 ${esc(p.num)}
-      </span>
-
-    `;
-
-  }
-
-
-  $('benchPlayers')
-    .appendChild(e);
-
-  updateBenchCount();
+return;
 
 }
 
+const exists =
+
+[...$('benchPlayers')
+
+.querySelectorAll('.benchPlayer')]
+
+.some(
+
+e =>
+
+String(e.dataset.id) ===
+
+String(id)
+
+);
+
+if(exists){
+
+return;
+
+}
+
+const e =
+
+document.createElement('div');
+
+e.className =
+
+'benchPlayer';
+
+e.dataset.id =
+
+p.id;
+
+if(p.photo){
+
+e.innerHTML = `
+
+<img
+
+src="${p.photo}"
+
+alt="">
+
+<span class="benchName">
+
+${esc(p.name)}
+
+</span>
+
+<span class="benchNum">
+
+背番号 ${esc(p.num)}
+
+</span>
+
+`;
+
+}else{
+
+e.innerHTML = `
+
+<div class="benchPhoto">
+
+${esc(p.num)}
+
+</div>
+
+<span class="benchName">
+
+${esc(p.name)}
+
+</span>
+
+<span class="benchNum">
+
+背番号 ${esc(p.num)}
+
+</span>
+
+`;
+
+}
+
+$('benchPlayers')
+
+.appendChild(e);
+
+updateBenchCount();
+
+}
 
 /* =========================
+
    ベンチ人数
+
 ========================= */
 
 function updateBenchCount(){
 
-  const n =
-    $('benchPlayers')
-      .querySelectorAll('.benchPlayer')
-      .length;
+const n =
 
-  $('benchCount').textContent =
-    `${n}人`;
+$('benchPlayers')
+
+.querySelectorAll('.benchPlayer')
+
+.length;
+
+$('benchCount').textContent =
+
+`${n}人`;
 
 }
 
-
 /* =========================
+
    ドラッグ
+
 ========================= */
 
 function dragify(e){
 
-  e.addEventListener(
-    'pointerdown',
-    event => {
+e.addEventListener(
 
-      if(arrowMode){
+'pointerdown',
 
-        return;
+event => {
 
-      }
+if(arrowMode){
 
-      event.preventDefault();
-
-      drag = e;
-
-      try{
-
-        e.setPointerCapture(
-          event.pointerId
-        );
-
-      }catch(err){}
-
-    }
-  );
-
-
-  e.addEventListener(
-    'pointermove',
-    event => {
-
-      if(drag !== e){
-
-        return;
-
-      }
-
-
-      const r =
-        pitch.getBoundingClientRect();
-
-
-      const x =
-        ((event.clientX - r.left) /
-        r.width) * 100;
-
-
-      const y =
-        ((event.clientY - r.top) /
-        r.height) * 100;
-
-
-      e.style.left =
-        Math.max(
-          3,
-          Math.min(97,x)
-        ) + '%';
-
-
-      e.style.top =
-        Math.max(
-          5,
-          Math.min(95,y)
-        ) + '%';
-
-    }
-  );
-
-
-  e.addEventListener(
-    'pointerup',
-    () => {
-
-      drag = null;
-
-    }
-  );
-
-
-  e.addEventListener(
-    'pointercancel',
-    () => {
-
-      drag = null;
-
-    }
-  );
+return;
 
 }
 
+event.preventDefault();
+
+drag = e;
+
+try{
+
+e.setPointerCapture(
+
+event.pointerId
+
+);
+
+}catch(err){}
+
+});
+
+e.addEventListener(
+
+'pointermove',
+
+event => {
+
+if(drag !== e){
+
+return;
+
+}
+
+const r =
+
+pitch.getBoundingClientRect();
+
+const x =
+
+((event.clientX - r.left) /
+
+r.width) * 100;
+
+const y =
+
+((event.clientY - r.top) /
+
+r.height) * 100;
+
+e.style.left =
+
+Math.max(
+
+3,
+
+Math.min(97,x)
+
+) + '%';
+
+e.style.top =
+
+Math.max(
+
+5,
+
+Math.min(95,y)
+
+) + '%';
+
+});
+
+e.addEventListener(
+
+'pointerup',
+
+() => {
+
+drag = null;
+
+});
+
+e.addEventListener(
+
+'pointercancel',
+
+() => {
+
+drag = null;
+
+});
+
+}
 
 /* =========================
+
    選手登録
+
 ========================= */
 
 $('reg').onclick =
-  async function(){
 
-    if(roster.length >= 50){
+async function(){
 
-      alert(
-        '選手は最大50人です'
-      );
+if(roster.length >= 50){
 
-      return;
+alert(
 
-    }
+'選手は最大50人です'
 
+);
 
-    const name =
-      $('name').value.trim();
+return;
 
+}
 
-    if(!name){
+const name =
 
-      alert(
-        '名前を入力してください'
-      );
+$('name').value.trim();
 
-      $('name').focus();
+if(!name){
 
-      return;
+alert(
 
-    }
+'名前を入力してください'
 
+);
 
-    const num =
-      Number($('num').value);
+$('name').focus();
 
+return;
 
-    if(
-      !Number.isInteger(num) ||
-      num < 1 ||
-      num > 99
-    ){
+}
 
-      alert(
-        '背番号は1〜99で入力してください'
-      );
+const num =
 
-      $('num').focus();
+Number($('num').value);
 
-      return;
+if(
 
-    }
+!Number.isInteger(num) ||
 
+num < 1 ||
 
-    const photo =
-      await readPhoto(
-        $('photo').files[0]
-      );
+num > 99
 
+){
 
-    const p = {
+alert(
 
-      id:
-        String(Date.now()) +
-        String(Math.random()).slice(2),
+'背番号は1〜99で入力してください'
 
-      num:String(num),
+);
 
-      name:name,
+$('num').focus();
 
-      photo:photo
+return;
 
-    };
+}
 
+const photo =
 
-    roster.push(p);
+await readPhoto(
 
+$('photo').files[0]
 
-    render();
+);
 
+const p = {
 
-    $('num').value =
-      Math.min(99,num + 1);
+id:
 
+String(Date.now()) +
 
-    $('name').value = '';
+String(Math.random()).slice(2),
 
-    $('photo').value = '';
+num:String(num),
 
+name:name,
 
-    $('name').focus();
+photo:photo
 
-  };
+};
 
+roster.push(p);
+
+render();
+
+$('num').value =
+
+Math.min(99,num + 1);
+
+$('name').value = '';
+
+$('photo').value = '';
+
+$('name').focus();
+
+};
 
 /* =========================
+
    新規
+
 ========================= */
 
 $('new').onclick =
-  function(){
 
-    $('num').value =
-      Math.min(
-        99,
-        roster.length + 1
-      );
+function(){
 
-    $('name').value = '';
+$('num').value =
 
-    $('photo').value = '';
+Math.min(
 
-    $('name').focus();
+99,
 
-  };
+roster.length + 1
 
+);
+
+$('name').value = '';
+
+$('photo').value = '';
+
+$('name').focus();
+
+};
 
 /* =========================
+
    ボール
+
 ========================= */
 
 $('ball').onclick =
-  function(){
 
-    if(ball){
+function(){
 
-      ball.remove();
+if(ball){
 
-      ball = null;
+ball.remove();
 
-      return;
+ball = null;
 
-    }
+return;
 
+}
 
-    ball =
-      document.createElement('div');
+ball =
 
-    ball.className = 'ball';
+document.createElement('div');
 
-    ball.textContent = '⚽';
+ball.className =
 
-    ball.style.left = '50%';
+'ball';
 
-    ball.style.top = '50%';
+ball.textContent =
 
+'⚽';
 
-    pitch.appendChild(ball);
+ball.style.left =
 
-    dragify(ball);
+'50%';
 
-  };
+ball.style.top =
 
+'50%';
+
+pitch.appendChild(ball);
+
+dragify(ball);
+
+};
 
 /* =========================
+
    パス線
+
 ========================= */
 
 $('arrow').onclick =
-  function(){
 
-    arrowMode =
-      !arrowMode;
+function(){
 
+arrowMode =
 
-    $('arrow')
-      .classList
-      .toggle(
-        'primary',
-        arrowMode
-      );
+!arrowMode;
 
+$('arrow')
 
-    if(!arrowMode){
+.classList
 
-      start = null;
+.toggle(
 
-    }
+'primary',
 
-  };
+arrowMode
 
-
-pitch.addEventListener(
-  'pointerdown',
-  function(e){
-
-    if(
-      !arrowMode ||
-      e.target !== pitch
-    ){
-
-      return;
-
-    }
-
-
-    const r =
-      pitch.getBoundingClientRect();
-
-
-    start = {
-
-      x:e.clientX - r.left,
-
-      y:e.clientY - r.top
-
-    };
-
-  }
 );
 
+if(!arrowMode){
+
+start = null;
+
+}
+
+};
 
 pitch.addEventListener(
-  'pointerup',
-  function(e){
 
-    if(
-      !arrowMode ||
-      !start
-    ){
+'pointerdown',
 
-      return;
+function(e){
 
-    }
+if(
 
+!arrowMode ||
 
-    const r =
-      pitch.getBoundingClientRect();
+e.target !== pitch
 
+){
 
-    const x =
-      e.clientX - r.left;
+return;
 
+}
 
-    const y =
-      e.clientY - r.top;
+const r =
 
+pitch.getBoundingClientRect();
 
-    const dx =
-      x - start.x;
+start = {
 
+x:e.clientX - r.left,
 
-    const dy =
-      y - start.y;
+y:e.clientY - r.top
 
+};
 
-    const len =
-      Math.hypot(dx,dy);
+});
 
+pitch.addEventListener(
 
-    if(len > 20){
+'pointerup',
 
-      const a =
-        document.createElement('div');
+function(e){
 
+if(
 
-      a.className = 'arrow';
+!arrowMode ||
 
+!start
 
-      a.style.left =
-        start.x + 'px';
+){
 
+return;
 
-      a.style.top =
-        start.y + 'px';
+}
 
+const r =
 
-      a.style.width =
-        len + 'px';
+pitch.getBoundingClientRect();
 
+const x =
 
-      a.style.transform =
-        `rotate(${Math.atan2(dy,dx)}rad)`;
+e.clientX - r.left;
 
+const y =
 
-      pitch.appendChild(a);
+e.clientY - r.top;
 
+const dx =
 
-      arrows.push(a);
+x - start.x;
 
-    }
+const dy =
 
+y - start.y;
 
-    start = null;
+const len =
 
-  }
-);
+Math.hypot(dx,dy);
 
+if(len > 20){
+
+const a =
+
+document.createElement('div');
+
+a.className =
+
+'arrow';
+
+a.style.left =
+
+start.x + 'px';
+
+a.style.top =
+
+start.y + 'px';
+
+a.style.width =
+
+len + 'px';
+
+a.style.transform =
+
+`rotate(${Math.atan2(dy,dx)}rad)`;
+
+pitch.appendChild(a);
+
+arrows.push(a);
+
+}
+
+start = null;
+
+});
 
 /* =========================
+
    クリア
+
 ========================= */
 
 $('clear').onclick =
-  function(){
 
-    pitch
-      .querySelectorAll(
-        '.player,.ball,.arrow'
-      )
-      .forEach(
-        e => e.remove()
-      );
+function(){
 
+pitch
 
-    arrows = [];
+.querySelectorAll(
 
-    ball = null;
+'.player,.ball,.arrow'
 
-    start = null;
+)
 
-  };
+.forEach(
 
+e => e.remove()
+
+);
+
+arrows = [];
+
+ball = null;
+
+start = null;
+
+};
 
 /* =========================
+
    フォーメーション
+
 ========================= */
 
 const forms = {
 
-  '4-4-2': [
+'4-4-2': [
 
-    [8,50],
+[8,50],
 
-    [22,20],
-    [22,40],
-    [22,60],
-    [22,80],
+[22,20],
 
-    [43,20],
-    [43,40],
-    [43,60],
-    [43,80],
+[22,40],
 
-    [68,38],
-    [68,62]
+[22,60],
 
-  ],
+[22,80],
 
+[43,20],
 
-  '4-3-3': [
+[43,40],
 
-    [8,50],
+[43,60],
 
-    [22,20],
-    [22,40],
-    [22,60],
-    [22,80],
+[43,80],
 
-    [45,30],
-    [45,50],
-    [45,70],
+[68,38],
 
-    [68,25],
-    [72,50],
-    [68,75]
+[68,62]
 
-  ],
+],
 
+'4-3-3': [
 
-  '3-5-2': [
+[8,50],
 
-    [8,50],
+[22,20],
 
-    [23,30],
-    [23,50],
-    [23,70],
+[22,40],
 
-    [43,15],
-    [43,35],
-    [43,50],
-    [43,65],
-    [43,85],
+[22,60],
 
-    [68,38],
-    [68,62]
+[22,80],
 
-  ]
+[45,30],
+
+[45,50],
+
+[45,70],
+
+[68,25],
+
+[72,50],
+
+[68,75]
+
+],
+
+'3-5-2': [
+
+[8,50],
+
+[23,30],
+
+[23,50],
+
+[23,70],
+
+[43,15],
+
+[43,35],
+
+[43,50],
+
+[43,65],
+
+[43,85],
+
+[68,38],
+
+[68,62]
+
+]
 
 };
 
-
 document
-  .querySelectorAll('[data-f]')
-  .forEach(btn => {
 
-    btn.onclick =
-      function(){
+.querySelectorAll('[data-f]')
 
-        const positions =
-          forms[
-            btn.dataset.f
-          ];
+.forEach(btn => {
 
+btn.onclick =
 
-        pitch
-          .querySelectorAll('.player')
-          .forEach(
-            e => e.remove()
-          );
+function(){
 
+const positions =
 
-        roster
-          .slice(0,11)
-          .forEach(
-            (p,i) => {
+forms[
 
-              const pos =
-                positions[i];
+btn.dataset.f
 
+];
 
-              if(!pos){
+pitch
 
-                return;
+.querySelectorAll('.player')
 
-              }
+.forEach(
 
+e => e.remove()
 
-              const e =
-                makePlayerElement(p);
+);
 
+roster
 
-              e.style.left =
-                pos[0] + '%';
+.slice(0,11)
 
+.forEach(
 
-              e.style.top =
-                pos[1] + '%';
+(p,i) => {
 
+const pos =
 
-              pitch.appendChild(e);
+positions[i];
 
-              dragify(e);
+if(!pos){
 
-            }
-          );
+return;
 
-      };
+}
 
-  });
+const e =
 
+makePlayerElement(p);
+
+e.style.left =
+
+pos[0] + '%';
+
+e.style.top =
+
+pos[1] + '%';
+
+pitch.appendChild(e);
+
+dragify(e);
+
+});
+
+};
+
+});
 
 /* =========================
+
+   チーム選択
+
+========================= */
+
+$('team').onchange =
+
+function(){
+
+const value =
+
+$('team').value;
+
+if(value === 'sagan'){
+
+$('teamName').value =
+
+'サガン鳥栖';
+
+}else if(value === 'opponent'){
+
+$('teamName').value =
+
+'相手チーム';
+
+}else{
+
+$('teamName').value = '';
+
+$('teamName').focus();
+
+}
+
+};
+
+/* =========================
+
    保存
+
 ========================= */
 
 $('save').onclick =
-  function(){
 
-    try{
+function(){
 
-      const board =
-        [...pitch.querySelectorAll('.player')]
-          .map(e => ({
+try{
 
-            id:e.dataset.id,
+const board =
 
-            x:e.style.left,
+[...pitch.querySelectorAll('.player')]
 
-            y:e.style.top
+.map(e => ({
 
-          }));
+id:e.dataset.id,
 
+x:e.style.left,
 
-      const bench =
-        [...$('benchPlayers')
-          .querySelectorAll('.benchPlayer')]
-          .map(
-            e => e.dataset.id
-          );
+y:e.style.top
 
+}));
 
-      const arrowData =
-        [...pitch.querySelectorAll('.arrow')]
-          .map(e => ({
+const bench =
 
-            left:e.style.left,
+[...$('benchPlayers')
 
-            top:e.style.top,
+.querySelectorAll('.benchPlayer')]
 
-            width:e.style.width,
+.map(
 
-            transform:e.style.transform
+e => e.dataset.id
 
-          }));
+);
 
+const arrowData =
 
-      const data = {
+[...pitch.querySelectorAll('.arrow')]
 
-        roster:roster,
+.map(e => ({
 
-        memo:$('memo').value,
+left:e.style.left,
 
-        board:board,
+top:e.style.top,
 
-        bench:bench,
+width:e.style.width,
 
-        arrows:arrowData,
+transform:e.style.transform
 
-        ball:
-          ball
-          ?
-          {
-            x:ball.style.left,
-            y:ball.style.top
-          }
-          :
-          null
+}));
 
-      };
+const data = {
 
+team:$('team').value,
 
-      localStorage.setItem(
-        'saganBoard',
-        JSON.stringify(data)
-      );
+teamName:$('teamName').value,
 
+roster:roster,
 
-      alert(
-        '保存しました！'
-      );
+memo:$('memo').value,
 
+board:board,
 
-    }catch(e){
+bench:bench,
 
-      console.error(e);
+arrows:arrowData,
 
-      alert(
-        '保存できません。写真サイズを小さくしてください。'
-      );
+ball:
 
-    }
+ball
 
-  };
+?
 
+{
+
+x:ball.style.left,
+
+y:ball.style.top
+
+}
+
+:
+
+null
+
+};
+
+localStorage.setItem(
+
+'saganBoard',
+
+JSON.stringify(data)
+
+);
+
+alert(
+
+`「${$('teamName').value || 'チーム'}」を保存しました！`
+
+);
+
+}catch(e){
+
+console.error(e);
+
+alert(
+
+'保存できませんでした。写真サイズを小さくしてください。'
+
+);
+
+}
+
+};
 
 /* =========================
+
    読み込み
+
 ========================= */
 
 $('load').onclick =
-  function(){
 
-    try{
+function(){
 
-      const s =
-        localStorage.getItem(
-          'saganBoard'
-        );
+try{
 
+const s =
 
-      if(!s){
+localStorage.getItem(
 
-        alert(
-          '保存データがありません'
-        );
+'saganBoard'
 
-        return;
+);
 
-      }
+if(!s){
 
+alert(
 
-      const d =
-        JSON.parse(s);
+'保存データがありません。'
 
+);
 
-      roster =
-        Array.isArray(d.roster)
-        ?
-        d.roster
-        :
-        [];
+return;
 
+}
 
-      $('memo').value =
-        d.memo || '';
+const d =
 
+JSON.parse(s);
 
-      render();
+roster =
 
+Array.isArray(d.roster)
 
-      pitch
-        .querySelectorAll(
-          '.player,.ball,.arrow'
-        )
-        .forEach(
-          e => e.remove()
-        );
+?
 
+d.roster
 
-      $('benchPlayers')
-        .innerHTML = '';
+:
 
+[];
 
-      arrows = [];
+$('team').value =
 
-      ball = null;
+d.team ||
 
+'sagan';
 
-      (d.board || [])
-        .forEach(p => {
+$('teamName').value =
 
-          if(
-            !roster.some(
-              x =>
-                String(x.id) ===
-                String(p.id)
-            )
-          ){
+d.teamName ||
 
-            return;
+'サガン鳥栖';
 
-          }
+$('memo').value =
 
+d.memo ||
 
-          place(p.id);
+'';
 
+render();
 
-          const e =
-            [...pitch
-              .querySelectorAll('.player')]
-              .find(
-                x =>
-                  String(x.dataset.id) ===
-                  String(p.id)
-              );
+pitch
 
+.querySelectorAll(
 
-          if(e){
+'.player,.ball,.arrow'
 
-            e.style.left =
-              p.x || '50%';
+)
 
-            e.style.top =
-              p.y || '50%';
+.forEach(
 
-          }
+e => e.remove()
 
-        });
+);
 
+$('benchPlayers')
 
-      (d.bench || [])
-        .forEach(id => {
+.innerHTML = '';
 
-          if(
-            roster.some(
-              x =>
-                String(x.id) ===
-                String(id)
-            )
-          ){
+arrows = [];
 
-            placeBench(id);
+ball = null;
 
-          }
+/* ピッチ */
 
-        });
+(d.board || [])
 
+.forEach(p => {
 
-      (d.arrows || [])
-        .forEach(a => {
+if(
 
-          const e =
-            document.createElement('div');
+!roster.some(
 
+x =>
 
-          e.className =
-            'arrow';
+String(x.id) ===
 
+String(p.id)
 
-          e.style.left =
-            a.left || '0px';
+)
 
+){
 
-          e.style.top =
-            a.top || '0px';
+return;
 
+}
 
-          e.style.width =
-            a.width || '0px';
+place(p.id);
 
+const e =
 
-          e.style.transform =
-            a.transform || 'none';
+[...pitch.querySelectorAll('.player')]
 
+.find(
 
-          pitch.appendChild(e);
+x =>
 
+String(x.dataset.id) ===
 
-          arrows.push(e);
+String(p.id)
 
-        });
+);
 
+if(e){
 
-      if(d.ball){
+e.style.left =
 
-        ball =
-          document.createElement('div');
+p.x ||
 
+'50%';
 
-        ball.className =
-          'ball';
+e.style.top =
 
+p.y ||
 
-        ball.textContent =
-          '⚽';
+'50%';
 
+}
 
-        ball.style.left =
-          d.ball.x || '50%';
+});
 
+/* ベンチ */
 
-        ball.style.top =
-          d.ball.y || '50%';
+(d.bench || [])
 
+.forEach(id => {
 
-        pitch.appendChild(ball);
+if(
 
+roster.some(
 
-        dragify(ball);
+x =>
 
-      }
+String(x.id) ===
 
+String(id)
 
-      updateBenchCount();
+)
 
+){
 
-      alert(
-        '読み込みました！'
-      );
+placeBench(id);
 
+}
 
-    }catch(e){
+});
 
-      console.error(e);
+/* パス線 */
 
-      alert(
-        '読み込みに失敗しました。'
-      );
+(d.arrows || [])
 
-    }
+.forEach(a => {
 
-  };
+const e =
 
+document.createElement('div');
+
+e.className =
+
+'arrow';
+
+e.style.left =
+
+a.left ||
+
+'0px';
+
+e.style.top =
+
+a.top ||
+
+'0px';
+
+e.style.width =
+
+a.width ||
+
+'0px';
+
+e.style.transform =
+
+a.transform ||
+
+'none';
+
+pitch.appendChild(e);
+
+arrows.push(e);
+
+});
+
+/* ボール */
+
+if(d.ball){
+
+ball =
+
+document.createElement('div');
+
+ball.className =
+
+'ball';
+
+ball.textContent =
+
+'⚽';
+
+ball.style.left =
+
+d.ball.x ||
+
+'50%';
+
+ball.style.top =
+
+d.ball.y ||
+
+'50%';
+
+pitch.appendChild(ball);
+
+dragify(ball);
+
+}
+
+updateBenchCount();
+
+alert(
+
+`「${$('teamName').value}」を読み込みました！`
+
+);
+
+}catch(e){
+
+console.error(e);
+
+alert(
+
+'読み込みに失敗しました。'
+
+);
+
+}
+
+};
 
 /* =========================
+
    初期表示
+
 ========================= */
 
 render();
@@ -1785,4 +2090,5 @@ updateBenchCount();
 </script>
 
 </body>
+
 </html>
